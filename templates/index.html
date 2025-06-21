@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UserRecon Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      padding: 2rem;
+    }
+    h1 {
+      color: #38bdf8;
+    }
+    input[type="text"] {
+      padding: 0.5rem;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #38bdf8;
+      border: none;
+      border-radius: 5px;
+      color: #111827;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    table {
+      margin-top: 2rem;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #374151;
+      text-align: left;
+    }
+    th {
+      background-color: #1f2937;
+    }
+    td a {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 UserRecon Tool</h1>
+  <p>Check any username across multiple social media platforms:</p>
+  <input type="text" id="username" placeholder="Enter username..." />
+  <button onclick="lookup()">Search</button>
+
+  <table id="results" style="display: none;">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Status</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function lookup() {
+      const username = document.getElementById("username").value;
+      const res = await fetch(`/lookup?username=${username}`);
+      const data = await res.json();
+
+      const table = document.getElementById("results");
+      const tbody = table.querySelector("tbody");
+      tbody.innerHTML = "";
+      table.style.display = "table";
+
+      data.results.forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.platform}</td>
+          <td>${item.status ? "✅ Found" : "❌ Not Found"}</td>
+          <td>${item.status ? `<a href="${item.link}" target="_blank">Visit</a>` : "-"}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>
